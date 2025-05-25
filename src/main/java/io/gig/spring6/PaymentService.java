@@ -9,12 +9,20 @@ import java.time.LocalDateTime;
  * @date : 2025/05/24
  */
 // abstract 선언으로 getExRate 에 대한 구현은 다른 곳에서 구현하도록 추상화하였다.
-abstract public class PaymentService {
+public class PaymentService {
+
+    // final : 한번 할당한 뒤 변경하지 못하게 하는 것
+    private final WebApiExtRateProvider exRateProvider;
+
+    public PaymentService() {
+        this.exRateProvider = new WebApiExtRateProvider();
+    }
 
     // java 는 HTTP 를 어떻게 다룰까? -> 블로그 주제?
     public Payment prepare(Long orderId, String currency, BigDecimal foreignCurrencyAmount) throws IOException {
 
-        BigDecimal exRate = getExRate(currency);
+
+        BigDecimal exRate = this.exRateProvider.getWebExRate(currency);
 
         // 위의 로직과 아래의 로직은 관심사가 다르다.
         // 위의 로직은 환율 정보를 가져오는 로직으로, 가져오는 API 에 대한 변경에 대한 요인으로 변경된다.
@@ -26,6 +34,4 @@ abstract public class PaymentService {
 
         return new Payment(orderId, currency, foreignCurrencyAmount, exRate, convertedAmount, validUntil);
     }
-
-    abstract BigDecimal getExRate(String currency) throws IOException;
 }

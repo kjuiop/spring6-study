@@ -7,8 +7,8 @@ import java.math.BigDecimal;
  * @author : JAKE
  * @date : 2025/05/25
  */
-public class SimpleExRatePaymentService extends PaymentService {
-    @Override
+public class SimpleExRateProvider {
+
     BigDecimal getExRate(String currency) throws IOException {
         if ("USD".equals(currency)) {
             return BigDecimal.valueOf(1000);

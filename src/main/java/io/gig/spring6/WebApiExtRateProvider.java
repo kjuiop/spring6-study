@@ -15,10 +15,9 @@ import java.util.stream.Collectors;
  * @date : 2025/05/25
  */
 // 추상화된 환율을 가져오는 클래스이다. 이 부분은 Client 에서 언제든 다른 클래스를 가져올 수 있다.
-public class WebApiExtRatePaymentService extends PaymentService {
+public class WebApiExtRateProvider {
 
-    @Override
-    BigDecimal getExRate(String currency) throws IOException {
+    BigDecimal getWebExRate(String currency) throws IOException {
         URL url = new URL("https://open.er-api.com/v6/latest/" + currency);
         // URLConnection 보다 HttpURLConnection 을 사용하면 HTTP 관련된 기능을 사용할 수 있음
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
