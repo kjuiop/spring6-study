@@ -1,0 +1,12 @@
+package io.gig.spring6;
+
+import java.io.IOException;
+import java.math.BigDecimal;
+
+/**
+ * @author : JAKE
+ * @date : 2025/05/27
+ */
+public interface ExRateProvider {
+    BigDecimal getExRate(String currency) throws IOException;
+}

@@ -7,9 +7,10 @@ import java.math.BigDecimal;
  * @author : JAKE
  * @date : 2025/05/25
  */
-public class SimpleExRateProvider {
+public class SimpleExRateProvider implements ExRateProvider {
 
-    BigDecimal getExRate(String currency) throws IOException {
+    @Override
+    public BigDecimal getExRate(String currency) throws IOException {
         if ("USD".equals(currency)) {
             return BigDecimal.valueOf(1000);
         }
