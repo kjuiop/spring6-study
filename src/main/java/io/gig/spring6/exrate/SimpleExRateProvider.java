@@ -1,6 +1,4 @@
-package io.gig.spring6;
-
-import org.springframework.stereotype.Component;
+package io.gig.spring6.exrate;
 
 import java.io.IOException;
 import java.math.BigDecimal;

@@ -1,10 +1,8 @@
-package io.gig.spring6;
+package io.gig.spring6.exrate;
 
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.Instant;
-import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 

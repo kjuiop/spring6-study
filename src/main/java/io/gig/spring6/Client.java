@@ -1,5 +1,7 @@
 package io.gig.spring6;
 
+import io.gig.spring6.payment.Payment;
+import io.gig.spring6.payment.PaymentService;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 

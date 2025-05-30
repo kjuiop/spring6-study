@@ -1,5 +1,6 @@
-package io.gig.spring6;
+package io.gig.spring6.payment;
 
+import io.gig.spring6.exrate.ExRateProvider;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;

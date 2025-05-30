@@ -1,4 +1,4 @@
-package io.gig.spring6;
+package io.gig.spring6.payment;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
