@@ -1,5 +1,7 @@
 package io.gig.spring6;
 
+import org.springframework.stereotype.Component;
+
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -9,6 +11,7 @@ import java.time.LocalDateTime;
  * @date : 2025/05/24
  */
 // abstract 선언으로 getExRate 에 대한 구현은 다른 곳에서 구현하도록 추상화하였다.
+@Component
 public class PaymentService {
 
     // final : 한번 할당한 뒤 변경하지 못하게 하는 것

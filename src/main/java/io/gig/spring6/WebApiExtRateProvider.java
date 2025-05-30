@@ -1,6 +1,7 @@
 package io.gig.spring6;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.stereotype.Component;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -15,6 +16,7 @@ import java.util.stream.Collectors;
  * @date : 2025/05/25
  */
 // 추상화된 환율을 가져오는 클래스이다. 이 부분은 Client 에서 언제든 다른 클래스를 가져올 수 있다.
+@Component
 public class WebApiExtRateProvider implements ExRateProvider {
 
     @Override
