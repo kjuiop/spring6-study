@@ -101,3 +101,16 @@ class Dog extends Animal {
 ![Image](images/a3.png)
 
 
+- POJO (Plain Old Java Object)
+  - 아무런 특별한 규약이나 프레임워크에 의존하지 않는 순수한 Java 객체
+  - 단순한 필드, getter/setter, 생성자, 메서드만 가짐
+  - User, Order, Product 등 도메인 객체
+
+- Business 로직을 개발한 클래스는 순수 Java 객체로 만듬
+- 실제 런타임에서 의존성을 주입하는 부분은 스프링 프레임워크 기능을 사용함
+- POJO 와 Spring Framework 부분이 결합되서 실제 운용되는 애플리케이션이 됨
+
+### 싱글톤 레지스트리 (Singleton Registry)
+
+- 스프링이 스스로의 정체성을 싱글톤 레지스트리
+- 애플리케이션에서 하나의 오브젝트만 생성해서 공유하는 경우
