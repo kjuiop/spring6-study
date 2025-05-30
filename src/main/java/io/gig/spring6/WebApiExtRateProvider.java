@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
  * @date : 2025/05/25
  */
 // 추상화된 환율을 가져오는 클래스이다. 이 부분은 Client 에서 언제든 다른 클래스를 가져올 수 있다.
-@Component
+// @Component
 public class WebApiExtRateProvider implements ExRateProvider {
 
     @Override
@@ -32,7 +32,7 @@ public class WebApiExtRateProvider implements ExRateProvider {
         ObjectMapper mapper = new ObjectMapper();
         ExRateData data = mapper.readValue(response, ExRateData.class);
         BigDecimal exRate = data.rates().get("KRW");
-        System.out.println(exRate);
+        System.out.println("API ExRate: " + exRate);
         return exRate;
     }
 }

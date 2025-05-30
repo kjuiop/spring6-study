@@ -50,10 +50,14 @@ class Dog extends Animal {
 - 오브젝트 사이에 의존관계는 실행되는 런타임에 의존관계가 만들어지고 실행 기능에 영향을 받지만 클래스 레벨의 의존관계는 다를 수 있다.
 - https://www.ibm.com/docs/en/dmrt/9.5?topic=diagrams-dependency-relationships
 
+<br />
+
 ### 관심사의 분리
 
 - 관심사는 동일한 이유로 변경되는 코드의 집합
 - API 를 이용해서 환율정보를 가져오고 JSON 을 오브젝트에 매핑하는 관심과 Payment 를 준비하는 로직은 관심이 다르다. 변경의 이유와 시점을 살펴보고 이를 분리한다.
+
+<br />
 
 ### 메소드 추출 리팩터링
 
@@ -61,6 +65,7 @@ class Dog extends Animal {
 - https://martinfowler.com/books/refactoring.html
 - https://refactoring.guru/ko/design-patterns
 
+<br />
 
 ### 기존
 
@@ -72,6 +77,8 @@ class Dog extends Animal {
 - 그리고 추상화 때 구현체를 결정하고 생성하는 주체는 PaymentService 가 아닌 ObjectFactory 에서 결정한다.
 - ObjectFactory 는 Client 클래스에서 애플리케이션을 구동할 때 생성되며, 그때 작성된 코드 기반으로 구현체를 선택한다.
 
+
+<br />
 
 ### 스프링
 
@@ -95,6 +102,7 @@ class Dog extends Animal {
   - 톰캣으로부터 요청이 들어옴
   - 서블릿 컨테이너에서 오브젝트를 가져와서 요청을 수행한다.
 
+<br />
 
 ### POJO
 
@@ -110,7 +118,40 @@ class Dog extends Animal {
 - 실제 런타임에서 의존성을 주입하는 부분은 스프링 프레임워크 기능을 사용함
 - POJO 와 Spring Framework 부분이 결합되서 실제 운용되는 애플리케이션이 됨
 
+<br />
+
 ### 싱글톤 레지스트리 (Singleton Registry)
 
 - 스프링이 스스로의 정체성을 싱글톤 레지스트리
 - 애플리케이션에서 하나의 오브젝트만 생성해서 공유하는 경우
+
+
+<br />
+
+### DI와 디자인패턴
+
+
+![Image](images/a4.png)
+
+
+- Design Patterns : Elements of Reusable Object-Oriented Software
+
+- 패턴을 목적과 범위로 구분함
+  - Class : 상속 → 클래스 상속을 통한 확장은 클래스가 n*n 으로 많아지는 단점이 있음
+  - Object : 합성 → Object 2개를 만들어서 Runtime 환경에 의존관계를 주입하는 방법
+
+- Object 합성을 이용하는 디자인 패턴을 적용할 때 스프링의 의존관계 주입(Dependency Injection)을 사용
+
+### 환율 정보가 필요할 때 매번 Web API 를 호출해야 할까?
+
+- 환율 정보가 필요한 기능 증가
+- 응답시간
+- 환율 변동 주기
+
+### WebApiExRateProvider 에 캐시 기능 추가
+
+- A) WebApiExRateProvider 코드 수정
+- B) 데코레이터(Decorator) 디자인 패턴
+  - 오브젝트에 부가적인 기능/책임을 동적으로 부여한다.
+
+![Image](images/a5.png)
