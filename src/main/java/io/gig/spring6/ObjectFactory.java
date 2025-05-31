@@ -1,7 +1,7 @@
 package io.gig.spring6;
 
 import io.gig.spring6.exrate.CachedExRateProvider;
-import io.gig.spring6.exrate.ExRateProvider;
+import io.gig.spring6.payment.ExRateProvider;
 import io.gig.spring6.exrate.WebApiExtRateProvider;
 import io.gig.spring6.payment.PaymentService;
 import org.springframework.context.annotation.Bean;

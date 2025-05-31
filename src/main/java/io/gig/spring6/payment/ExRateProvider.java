@@ -1,4 +1,4 @@
-package io.gig.spring6.exrate;
+package io.gig.spring6.payment;
 
 import java.io.IOException;
 import java.math.BigDecimal;

@@ -1,5 +1,7 @@
 package io.gig.spring6.exrate;
 
+import io.gig.spring6.payment.ExRateProvider;
+
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.Instant;

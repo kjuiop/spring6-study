@@ -1,6 +1,7 @@
 package io.gig.spring6.exrate;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.gig.spring6.payment.ExRateProvider;
 
 import java.io.BufferedReader;
 import java.io.IOException;
