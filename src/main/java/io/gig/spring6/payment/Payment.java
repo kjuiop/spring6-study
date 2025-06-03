@@ -51,4 +51,20 @@ public class Payment {
                 ", validUntil=" + validUntil +
                 '}';
     }
+
+    public BigDecimal getExRate() {
+        return this.exRate;
+    }
+
+    public BigDecimal getConvertedAmount() {
+        return this.convertedAmount;
+    }
+
+    public BigDecimal getForeignCurrencyAmount() {
+        return this.foreignCurrencyAmount;
+    }
+
+    public LocalDateTime getValidUntil() {
+        return this.validUntil;
+    }
 }
