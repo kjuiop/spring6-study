@@ -1,18 +1,14 @@
 package io.gig.spring6.payment;
 
 import io.gig.spring6.TestObjectFactory;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.List;
 
 import static java.math.BigDecimal.valueOf;
@@ -60,5 +56,57 @@ public class PaymentServiceSpringTest {
          assertThat(payment2.getConvertedAmount()).isEqualByComparingTo(valueOf(5_000));
          */
 
+    }
+
+    @Test
+    void convertedAmountTestRecord() throws IOException {
+
+        List<ExRateTestCase> testCases = List.of(
+                new ExRateTestCase(valueOf(1000), valueOf(10_000)),
+                new ExRateTestCase(valueOf(500), valueOf(5_000))
+        );
+
+        for (ExRateTestCase tc : testCases) {
+            ExRateProviderStub stub = new ExRateProviderStub(tc.exRate());
+            PaymentService paymentService = new PaymentService(stub);
+
+            Payment payment = paymentService.prepare(1L, "USD", BigDecimal.TEN);
+
+            assertThat(payment.getExRate()).isEqualByComparingTo(tc.exRate());
+            assertThat(payment.getConvertedAmount()).isEqualByComparingTo(tc.expectedConverted());
+        }
+    }
+
+    @Test
+    void convertedAmountTestInnerClass() throws IOException {
+
+        // 함수 안에서 직접 테스트 케이스 타입 정의 (inner 클래스)
+        class TestCase {
+            final BigDecimal exRate;
+            final BigDecimal expectedExRate;
+            final BigDecimal expectedConverted;
+
+            TestCase(BigDecimal exRate, BigDecimal expectedExRate, BigDecimal expectedConverted) {
+                this.exRate = exRate;
+                this.expectedExRate = expectedExRate;
+                this.expectedConverted = expectedConverted;
+            }
+        }
+
+        List<TestCase> testCases = List.of(
+                new TestCase(valueOf(1000), valueOf(1000), valueOf(10_000)),
+                new TestCase(valueOf(500), valueOf(500), valueOf(5_000))
+        );
+
+        for (TestCase tc : testCases) {
+
+            ExRateProviderStub stub = new ExRateProviderStub(tc.exRate);
+            PaymentService paymentService = new PaymentService(stub);
+
+            Payment payment = paymentService.prepare(1L, "USD", BigDecimal.TEN);
+
+            assertThat(payment.getExRate()).isEqualByComparingTo(tc.expectedExRate);
+            assertThat(payment.getConvertedAmount()).isEqualByComparingTo(tc.expectedConverted);
+        }
     }
 }
