@@ -18,7 +18,7 @@ public class Client {
     public static void main(String[] args) throws IOException, InterruptedException {
         // object factory 를 통해 어떤 구현체를 선택할 책임을 client 가 아닌 objectFactory 에서 다루게 됨
         // object factory -> Spring 의 bean factory 에 빈을 등록하여 사용
-        BeanFactory beanFactory = new AnnotationConfigApplicationContext(ObjectFactory.class);
+        BeanFactory beanFactory = new AnnotationConfigApplicationContext(PaymentConfig.class);
         PaymentService paymentService = beanFactory.getBean(PaymentService.class);
 
         Payment payment1 = paymentService.prepare(100L, "USD", BigDecimal.valueOf(50.7));
@@ -32,6 +32,6 @@ public class Client {
         TimeUnit.SECONDS.sleep(3);
 
         Payment payment3 = paymentService.prepare(100L, "USD", BigDecimal.valueOf(50.7));
-        System.out.println("Payment2: " + payment3);
+        System.out.println("Payment3: " + payment3);
     }
 }

@@ -1,7 +1,9 @@
 package io.gig.spring6.payment;
 
-import io.gig.spring6.TestObjectFactory;
+import io.gig.spring6.TestPaymentConfig;
 import io.gig.spring6.exrate.WebApiExtRateProvider;
+import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.BeanFactory;
@@ -9,7 +11,10 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.time.Clock;
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 import static java.math.BigDecimal.valueOf;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -20,11 +25,18 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 class PaymentServiceTest {
 
+    Clock clock;
+
+    @BeforeEach
+    void beforeEach() {
+        this.clock = Clock.fixed(Instant.now(), ZoneId.systemDefault());
+    }
+
     @Test
     @DisplayName("prepare 메소드가 요구사항 3가지를 충족했는지 검사")
     void prepare() throws IOException {
 
-        BeanFactory beanFactory = new AnnotationConfigApplicationContext(TestObjectFactory.class);
+        BeanFactory beanFactory = new AnnotationConfigApplicationContext(TestPaymentConfig.class);
         PaymentService paymentService = beanFactory.getBean(PaymentService.class);
 
         // when
@@ -44,15 +56,15 @@ class PaymentServiceTest {
     void convertedAmount() throws IOException {
 
         // given
-        testAmount(valueOf(500), valueOf(5_000));
-        testAmount(valueOf(1_000), valueOf(10_000));
-        testAmount(valueOf(3_000), valueOf(30_000));
+        testAmount(valueOf(500), valueOf(5_000), this.clock);
+        testAmount(valueOf(1_000), valueOf(10_000), this.clock);
+        testAmount(valueOf(3_000), valueOf(30_000), this.clock);
     }
 
-    private void testAmount(BigDecimal exRate, BigDecimal convertedAmount) throws IOException {
+    private void testAmount(BigDecimal exRate, BigDecimal convertedAmount, Clock clock) throws IOException {
 
         // given
-        PaymentService paymentService = new PaymentService(new ExRateProviderStub(exRate));
+        PaymentService paymentService = new PaymentService(new ExRateProviderStub(exRate), clock);
 
         // when
         Payment payment = paymentService.prepare(1L, "USD", BigDecimal.TEN);
@@ -65,6 +77,19 @@ class PaymentServiceTest {
         assertThat(payment.getConvertedAmount()).isEqualByComparingTo(convertedAmount);
     }
 
+    @Test
+    void validUntil() throws IOException {
+        PaymentService paymentService = new PaymentService(new ExRateProviderStub(valueOf(1000)), this.clock);
+
+        Payment payment = paymentService.prepare(1L, "USD", BigDecimal.TEN);
+
+        // this.clock 은 fixed clock 임으로 30분 더해져있는지에 대한 여부를 검사할 수 있음
+        LocalDateTime now = LocalDateTime.now(this.clock);
+        LocalDateTime expectedValidUntil = now.plusMinutes(30);
+
+        Assertions.assertThat(payment.getValidUntil()).isEqualTo(expectedValidUntil);
+    }
+
 
     // WebApiExtRateProvider 서비스에 의존적인 테스트 코드, 외부 시스템에 문제가 생기면?
     // ExRateProvider 가 제공하는 환율 값으로 계산한 것인지 모름
@@ -74,7 +99,7 @@ class PaymentServiceTest {
     void prepareByWebApiExtRateProvider() throws IOException {
 
         // given
-        PaymentService paymentService = new PaymentService(new WebApiExtRateProvider());
+        PaymentService paymentService = new PaymentService(new WebApiExtRateProvider(), this.clock);
 
         // when
         Payment payment = paymentService.prepare(1L, "USD", BigDecimal.TEN);

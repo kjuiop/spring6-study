@@ -1,6 +1,7 @@
 package io.gig.spring6.payment;
 
-import io.gig.spring6.TestObjectFactory;
+import io.gig.spring6.TestPaymentConfig;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,8 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.time.Clock;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static java.math.BigDecimal.valueOf;
@@ -19,7 +22,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @date : 2025/05/25
  */
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = TestObjectFactory.class)
+@ContextConfiguration(classes = TestPaymentConfig.class)
 public class PaymentServiceSpringTest {
 
     /**
@@ -30,6 +33,9 @@ public class PaymentServiceSpringTest {
 
     @Autowired
     private PaymentService paymentService;
+
+    @Autowired
+    private Clock clock;
 
 
     // TestFactory 의 개념은 적용할 수 없나?
@@ -44,7 +50,7 @@ public class PaymentServiceSpringTest {
 
         // objectFactory 를 생성하는 것에서 Spring 의 Bean 을 통해 주입받는 것으로 변경
         // PaymentService paymentService = beanFactory.getBean(PaymentService.class);
-        Payment payment1 = paymentService.prepare(1L, "USD", BigDecimal.TEN);
+        Payment payment1 = this.paymentService.prepare(1L, "USD", BigDecimal.TEN);
         assertThat(payment1.getExRate()).isEqualByComparingTo(valueOf(1_000));
         assertThat(payment1.getConvertedAmount()).isEqualByComparingTo(valueOf(10_000));
 
@@ -59,6 +65,18 @@ public class PaymentServiceSpringTest {
     }
 
     @Test
+    void validUntil() throws IOException {
+
+        Payment payment = this.paymentService.prepare(1L, "USD", BigDecimal.TEN);
+
+        // this.clock 은 fixed clock 임으로 30분 더해져있는지에 대한 여부를 검사할 수 있음
+        LocalDateTime now = LocalDateTime.now(this.clock);
+        LocalDateTime expectedValidUntil = now.plusMinutes(30);
+
+        Assertions.assertThat(payment.getValidUntil()).isEqualTo(expectedValidUntil);
+    }
+
+    @Test
     void convertedAmountTestRecord() throws IOException {
 
         List<ExRateTestCase> testCases = List.of(
@@ -68,7 +86,7 @@ public class PaymentServiceSpringTest {
 
         for (ExRateTestCase tc : testCases) {
             ExRateProviderStub stub = new ExRateProviderStub(tc.exRate());
-            PaymentService paymentService = new PaymentService(stub);
+            PaymentService paymentService = new PaymentService(stub, this.clock);
 
             Payment payment = paymentService.prepare(1L, "USD", BigDecimal.TEN);
 
@@ -101,7 +119,7 @@ public class PaymentServiceSpringTest {
         for (TestCase tc : testCases) {
 
             ExRateProviderStub stub = new ExRateProviderStub(tc.exRate);
-            PaymentService paymentService = new PaymentService(stub);
+            PaymentService paymentService = new PaymentService(stub, this.clock);
 
             Payment payment = paymentService.prepare(1L, "USD", BigDecimal.TEN);
 

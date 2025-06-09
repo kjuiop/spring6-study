@@ -7,6 +7,8 @@ import io.gig.spring6.payment.PaymentService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.time.Clock;
+
 /**
  * @author : JAKE
  * @date : 2025/05/28
@@ -14,7 +16,7 @@ import org.springframework.context.annotation.Configuration;
 // spring bean 등록
 @Configuration
 // @ComponentScan
-public class ObjectFactory {
+public class PaymentConfig {
 
     /**
      *
@@ -24,7 +26,7 @@ public class ObjectFactory {
      */
     @Bean
     public PaymentService paymentService() {
-        return new PaymentService(cachedExRateProvider());
+        return new PaymentService(cachedExRateProvider(), clock());
     }
 
     // cachedExRateProvider 구현체 사용
@@ -37,5 +39,10 @@ public class ObjectFactory {
     @Bean
     public ExRateProvider exRateProvider() {
         return new WebApiExtRateProvider();
+    }
+
+    @Bean
+    public Clock clock() {
+        return Clock.systemDefaultZone();
     }
 }

@@ -4,6 +4,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.time.Clock;
 import java.time.LocalDateTime;
 
 /**
@@ -16,8 +17,9 @@ public class PaymentService {
 
     // final : 한번 할당한 뒤 변경하지 못하게 하는 것
     private final ExRateProvider exRateProvider;
+    private final Clock clock;
 
-    public PaymentService(ExRateProvider exRateProvider) {
+    public PaymentService(ExRateProvider exRateProvider, Clock clock) {
         // 인스터의 구현체를 주입함
         // paymentService -> WebApiExtRateProvider 를 의존하게 되어 있음 (RunTime 에서의 의존관계)
         // RunTime 에 내가 어떤 클래스를 쓰는 건지 필요하기 때문에 의존
@@ -25,6 +27,7 @@ public class PaymentService {
         // 따라서 구현체는 Client 클래스에서 생성해서 주입해주고, 이 클래스는 인터페이스를 받아서 사용하면 된다.
         // this.exRateProvider = new WebApiExtRateProvider();
         this.exRateProvider = exRateProvider;
+        this.clock = clock;
     }
 
     // java 는 HTTP 를 어떻게 다룰까? -> 블로그 주제?
@@ -39,7 +42,8 @@ public class PaymentService {
         // 따라서 두 로직은 다른 시점에서 다른 이유로 변경되기 때문에 분리되는 것이 적합하다.
 
         BigDecimal convertedAmount = foreignCurrencyAmount.multiply(exRate);
-        LocalDateTime validUntil = LocalDateTime.now().plusMinutes(30);
+        // 시계의 종류에 따라 현재시간으로부터 경과한 시간을 의미함
+        LocalDateTime validUntil = LocalDateTime.now(clock).plusMinutes(30);
 
         // 상속은 상위 클래스와 하위 클래스가 강하게 결합되어 있음
         // 상속된 클래스가 변경이 되면 분기처리를 위해 여러 클래스들을 만들어야 한다.
