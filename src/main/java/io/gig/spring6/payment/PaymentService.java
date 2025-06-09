@@ -41,13 +41,13 @@ public class PaymentService {
         // 그러나 아래의 로직은 우리 서비스 내에서 환율을 계산하는 로직이 변경될 때 변경된다.
         // 따라서 두 로직은 다른 시점에서 다른 이유로 변경되기 때문에 분리되는 것이 적합하다.
 
-        BigDecimal convertedAmount = foreignCurrencyAmount.multiply(exRate);
+        // BigDecimal convertedAmount = foreignCurrencyAmount.multiply(exRate);
         // 시계의 종류에 따라 현재시간으로부터 경과한 시간을 의미함
-        LocalDateTime validUntil = LocalDateTime.now(clock).plusMinutes(30);
+        // LocalDateTime validUntil = LocalDateTime.now(clock).plusMinutes(30);
 
         // 상속은 상위 클래스와 하위 클래스가 강하게 결합되어 있음
         // 상속된 클래스가 변경이 되면 분기처리를 위해 여러 클래스들을 만들어야 한다.
         // 예를 들어 환율에 혜택을 부여한다고 가정했을 때, simpleRate, webRate * 혜택 o,x 별로 늘어나게 된다.
-        return new Payment(orderId, currency, foreignCurrencyAmount, exRate, convertedAmount, validUntil);
+        return Payment.createPrepare(orderId, currency, foreignCurrencyAmount, exRate, LocalDateTime.now(clock));
     }
 }

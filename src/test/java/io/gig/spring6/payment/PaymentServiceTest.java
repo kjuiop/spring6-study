@@ -25,7 +25,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 class PaymentServiceTest {
 
-    Clock clock;
+    private Clock clock;
 
     @BeforeEach
     void beforeEach() {
