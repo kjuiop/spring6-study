@@ -1,8 +1,6 @@
 package io.gig.spring6.exrate;
 
 import io.gig.spring6.api.APITemplate;
-import io.gig.spring6.api.ErApiExRateExtractor;
-import io.gig.spring6.api.HttpClientApiExtractor;
 import io.gig.spring6.payment.ExRateProvider;
 
 import java.math.BigDecimal;
@@ -15,12 +13,16 @@ import java.math.BigDecimal;
 // @Component
 public class WebApiExtRateProvider implements ExRateProvider {
 
-    private final APITemplate apiTemplate = new APITemplate();
+    private final APITemplate apiTemplate;
+
+    public WebApiExtRateProvider(APITemplate apiTemplate) {
+        this.apiTemplate = apiTemplate;
+    }
 
     // IOException 은 네트워크 관련 오류인데, 이 오류는 이 클래스에서만 발생하지, 부모 클래스에서는 발생하지 않음
     @Override
     public BigDecimal getExRate(String currency) {
         String url = "https://open.er-api.com/v6/latest/" + currency;
-        return this.apiTemplate.getExRate(url, new HttpClientApiExtractor(), new ErApiExRateExtractor());
+        return this.apiTemplate.getForExRate(url);
     }
 }

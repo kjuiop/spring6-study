@@ -1,5 +1,8 @@
 package io.gig.spring6;
 
+import io.gig.spring6.api.APITemplate;
+import io.gig.spring6.api.ErApiExRateExtractor;
+import io.gig.spring6.api.SimpleApiExecutor;
 import io.gig.spring6.exrate.CachedExRateProvider;
 import io.gig.spring6.payment.ExRateProvider;
 import io.gig.spring6.exrate.WebApiExtRateProvider;
@@ -38,11 +41,16 @@ public class PaymentConfig {
     // WebApiExtRateProvider 구현체 사용
     @Bean
     public ExRateProvider exRateProvider() {
-        return new WebApiExtRateProvider();
+        return new WebApiExtRateProvider(apiTemplate());
     }
 
     @Bean
     public Clock clock() {
         return Clock.systemDefaultZone();
+    }
+
+    @Bean
+    public APITemplate apiTemplate() {
+        return new APITemplate(new SimpleApiExecutor(), new ErApiExRateExtractor());
     }
 }

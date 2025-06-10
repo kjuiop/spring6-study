@@ -1,5 +1,6 @@
 package io.gig.spring6;
 
+import io.gig.spring6.api.APITemplate;
 import io.gig.spring6.payment.ExRateProvider;
 import io.gig.spring6.payment.ExRateProviderStub;
 import io.gig.spring6.payment.PaymentService;
@@ -31,5 +32,10 @@ public class TestPaymentConfig {
     @Bean
     public Clock clock() {
         return Clock.fixed(Instant.now(), ZoneId.systemDefault());
+    }
+
+    @Bean
+    public APITemplate apiTemplate() {
+        return new APITemplate();
     }
 }

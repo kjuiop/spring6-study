@@ -1,7 +1,6 @@
 package io.gig.spring6.payment;
 
 import io.gig.spring6.TestPaymentConfig;
-import io.gig.spring6.exrate.WebApiExtRateProvider;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -88,34 +87,5 @@ class PaymentServiceTest {
         LocalDateTime expectedValidUntil = now.plusMinutes(30);
 
         Assertions.assertThat(payment.getValidUntil()).isEqualTo(expectedValidUntil);
-    }
-
-
-    // WebApiExtRateProvider 서비스에 의존적인 테스트 코드, 외부 시스템에 문제가 생기면?
-    // ExRateProvider 가 제공하는 환율 값으로 계산한 것인지 모름
-    // 환율 유효 시간 계산이 정확한지 모름
-    @Test
-    @DisplayName("prepare 메소드가 요구사항 3가지를 충족했는지 검사")
-    void prepareByWebApiExtRateProvider() throws IOException {
-
-        // given
-        PaymentService paymentService = new PaymentService(new WebApiExtRateProvider(), this.clock);
-
-        // when
-        Payment payment = paymentService.prepare(1L, "USD", BigDecimal.TEN);
-
-        // then
-
-        // 환율정보를 가져온다.
-        assertThat(payment.getExRate()).isNotNull();
-
-        // 원화환산 금액 계산
-        // 환율 * 외환금액 = 원화환산금액
-        assertThat(payment.getConvertedAmount())
-                .isEqualTo(payment.getExRate().multiply(payment.getForeignCurrencyAmount()));
-
-        // 원화환산금액의 유효시간
-        assertThat(payment.getValidUntil()).isAfter(LocalDateTime.now());
-        assertThat(payment.getValidUntil()).isBefore(LocalDateTime.now().plusMinutes(30));
     }
 }

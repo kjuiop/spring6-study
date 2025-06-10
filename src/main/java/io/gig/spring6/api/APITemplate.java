@@ -13,7 +13,24 @@ import java.net.URISyntaxException;
  */
 public class APITemplate {
 
-    public BigDecimal getExRate(String url, ApiExecutor apiExecutor, ExRateExtractor exRateExtractor) {
+    private final ApiExecutor apiExecutor;
+    private final ExRateExtractor exRateExtractor;
+
+    public APITemplate() {
+        this.apiExecutor = new HttpClientApiExtractor();
+        this.exRateExtractor = new ErApiExRateExtractor();
+    }
+
+    public APITemplate(ApiExecutor apiExecutor, ExRateExtractor exRateExtractor) {
+        this.apiExecutor = apiExecutor;
+        this.exRateExtractor = exRateExtractor;
+    }
+
+    public BigDecimal getForExRate(String url) {
+        return this.getForExRate(url, this.apiExecutor, this.exRateExtractor);
+    }
+
+    public BigDecimal getForExRate(String url, ApiExecutor apiExecutor, ExRateExtractor exRateExtractor) {
         URI uri;
         try {
             uri = new URI(url);
