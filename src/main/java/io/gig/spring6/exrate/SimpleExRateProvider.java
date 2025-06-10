@@ -2,7 +2,6 @@ package io.gig.spring6.exrate;
 
 import io.gig.spring6.payment.ExRateProvider;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 
 /**
@@ -13,7 +12,7 @@ import java.math.BigDecimal;
 public class SimpleExRateProvider implements ExRateProvider {
 
     @Override
-    public BigDecimal getExRate(String currency) throws IOException {
+    public BigDecimal getExRate(String currency) {
         if ("USD".equals(currency)) {
             return BigDecimal.valueOf(1000);
         }

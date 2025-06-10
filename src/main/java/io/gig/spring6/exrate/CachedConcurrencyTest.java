@@ -2,7 +2,6 @@ package io.gig.spring6.exrate;
 
 import io.gig.spring6.payment.ExRateProvider;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
@@ -27,8 +26,6 @@ public class CachedConcurrencyTest {
                 try {
                     BigDecimal rate = cached.getExRate("USD");
                     System.out.println(Thread.currentThread().getName() + " got rate: " + rate);
-                } catch (IOException e) {
-                    e.printStackTrace();
                 } finally {
                     latch.countDown();
                 }
@@ -42,7 +39,7 @@ public class CachedConcurrencyTest {
     // 가짜 환율 제공자 (느린 외부 API 흉내)
     static class SlowExRateProvider implements ExRateProvider {
         @Override
-        public BigDecimal getExRate(String currency) throws IOException {
+        public BigDecimal getExRate(String currency) {
             try {
                 Thread.sleep(1000); // 외부 API 응답 지연
             } catch (InterruptedException e) {

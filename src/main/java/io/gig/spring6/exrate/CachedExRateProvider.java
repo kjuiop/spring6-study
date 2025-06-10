@@ -2,7 +2,6 @@ package io.gig.spring6.exrate;
 
 import io.gig.spring6.payment.ExRateProvider;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.Map;
@@ -52,16 +51,12 @@ public class CachedExRateProvider implements ExRateProvider {
     **/
 
     @Override
-    public BigDecimal getExRate(String currency) throws IOException {
+    public BigDecimal getExRate(String currency) {
         return cache.compute(currency, (key, existing) -> {
             if (existing == null || existing.isExpired(ttilMillis)) {
-                try {
-                    BigDecimal freshValue = target.getExRate(currency);
-                    System.out.println("Cache Updated");
-                    return new CachedExRateMap(freshValue, Instant.now());
-                } catch (IOException e) {
-                    throw new RuntimeException(e); // 예외 처리 주의
-                }
+                BigDecimal freshValue = target.getExRate(currency);
+                System.out.println("Cache Updated");
+                return new CachedExRateMap(freshValue, Instant.now());
             }
             return existing;
         }).getValue();

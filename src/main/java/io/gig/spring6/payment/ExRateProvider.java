@@ -1,6 +1,5 @@
 package io.gig.spring6.payment;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 
 /**
@@ -8,5 +7,5 @@ import java.math.BigDecimal;
  * @date : 2025/05/27
  */
 public interface ExRateProvider {
-    BigDecimal getExRate(String currency) throws IOException;
+    BigDecimal getExRate(String currency);
 }
