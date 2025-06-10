@@ -268,3 +268,85 @@ public class PaymentService {
 
 <br />
 
+# 템플릿
+
+## 개방 폐쇄 원칙
+
+- 클래스나 모듈은 확장에는 열려 있어야 하고 변경에는 닫혀 있어야 한다.
+- 변화의 특성이 다른 부분을 구분하고 각각 다른 목적과 이유에 의해 다른 시점에 독립적으로 변경될 수 있는 효율적인 구조를 만들어야 한다.
+
+<br />
+
+## 템플릿
+
+- 코드 중에서 변경이 거의 일어나지 않으며 일정한 패턴으로 유지되는 특성을 가진 부분을 자유롭게 변경되는 성질을 가진 부분으로부터 독립시켜서 효과적으로 활용할 수 있도록 하는 방법
+  - 템플릿 : 변경이 거의 일어나지 않는 부분
+  - 콜백 : 자유롭게 변경되는 성질을 가진 부분
+- 어떤 목적을 위해 미리 만들어둔 모양이 있는 틀
+- 고정된 틀 안에 바꿀 수 있는 부분을 넣어서 사용하도록 만들어진 오브젝트
+- 템플릿 메서드 패턴도 템플릿 사용
+
+<br />
+
+### 템플릿 메소드 패턴
+
+- 템플릿 메소드 패턴은 고정된 틀의 로직을 가진 템플릿 메소드를 슈퍼클래스에 두고, 바뀌는 부분을 서브클래스의 메소드에 두는 구조로 이루어짐
+
+<br />
+
+### 콜백(callback)
+
+- 콜백(callback) 은 실행되는 것을 목적으로 다른 오브젝트의 메소드에 전달되는 오브젝트 파라미터로 전달되지만 값을 참조하기 위한 것이 아니라 특정 로직을 담은 메소드를 실행시키는 것이 목적
+- 하나의 메소드를 가진 인터페이스 타입(SAM)의 오브젝트 또는 람다 오브젝트
+
+<br />
+
+### 템플릿/콜백은 전략 패턴의 특별한 케이스
+
+- 템플릿은 전략 패턴의 컨텍스트
+- 콜백은 전략 패턴의 전략
+- 템플릿/콜백은 메소드 하나만 가진 전략 인터페이스를 사용하는 전략 패턴
+
+<br />
+
+### 메소드 주입
+
+- 의존 오브젝트가 메소드 호출 시점에 파라미터로 전달되는 방식
+- 의존관계 주입의 한 종류
+- 메소드 호출 주입(method call injection)이라고도 한다.
+
+![Image](images/a8.png)
+
+<br />
+
+### WebApiExRateProvider 의 구성
+
+- URI 를 준비하고 예외처리를 위한 작업을 하는 코드
+  - API 로부터 환율 정보를 가져오는 코드의 기본 틀 (잘 변경되지 않음)
+- API 를 실행하고, 서버로부터 받은 응답을 가져오는 코드
+  - API 를 호출하는 기술과 방법이 변경될 수 있음
+- JSON 문자열을 파싱하고 필요한 환율 정보를 추출하는 코드
+
+
+<br />
+
+### 람다 식으로 익명클래스 작성하기
+
+```shell
+@Override
+public BigDecimal getExRate(String currency) {
+    String url = "https://open.er-api.com/v6/latest/" + currency;
+
+    return runAPIExRate(url, new SimpleApiExecutor(), response -> {
+        ObjectMapper mapper = new ObjectMapper();
+        ExRateData data = mapper.readValue(response, ExRateData.class);
+        BigDecimal exRate = data.rates().get("KRW");
+        System.out.println("API ExRate: " + exRate);
+        return exRate;
+    });
+}
+```
+- 위와 같이 response 에서 값을 추출하는 로직을 익명클래스 형태로 구현할 수 있다.
+
+
+

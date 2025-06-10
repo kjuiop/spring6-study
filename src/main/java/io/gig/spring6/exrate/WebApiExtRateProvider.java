@@ -2,16 +2,16 @@ package io.gig.spring6.exrate;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.gig.spring6.api.ApiExecutor;
+import io.gig.spring6.api.ErApiExRateExtractor;
+import io.gig.spring6.api.ExRateExtractor;
+import io.gig.spring6.api.SimpleApiExecutor;
 import io.gig.spring6.payment.ExRateProvider;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.math.BigDecimal;
-import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.stream.Collectors;
 
 /**
  * @author : JAKE
@@ -25,10 +25,10 @@ public class WebApiExtRateProvider implements ExRateProvider {
     @Override
     public BigDecimal getExRate(String currency) {
         String url = "https://open.er-api.com/v6/latest/" + currency;
-        return runAPIExRate(url);
+        return runAPIExRate(url, new SimpleApiExecutor(), new ErApiExRateExtractor());
     }
 
-    private BigDecimal runAPIExRate(String url) {
+    private BigDecimal runAPIExRate(String url, ApiExecutor apiExecutor, ExRateExtractor exRateExtractor) {
         URI uri;
         try {
             uri = new URI(url);
@@ -38,33 +38,15 @@ public class WebApiExtRateProvider implements ExRateProvider {
 
         String response;
         try {
-            response = executeAPI(uri);
+            response = apiExecutor.execute(uri);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
         try {
-            return extractExRate(response);
+            return exRateExtractor.extract(response);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    private String executeAPI(URI uri) throws IOException {
-        String response;
-        // URLConnection 보다 HttpURLConnection 을 사용하면 HTTP 관련된 기능을 사용할 수 있음
-        HttpURLConnection connection = (HttpURLConnection) uri.toURL().openConnection();
-        try (BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
-            response = br.lines().collect(Collectors.joining());
-        }
-        return response;
-    }
-
-    private BigDecimal extractExRate(String response) throws JsonProcessingException {
-        ObjectMapper mapper = new ObjectMapper();
-        ExRateData data = mapper.readValue(response, ExRateData.class);
-        BigDecimal exRate = data.rates().get("KRW");
-        System.out.println("API ExRate: " + exRate);
-        return exRate;
     }
 }
