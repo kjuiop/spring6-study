@@ -2,9 +2,9 @@ package io.gig.spring6;
 
 import io.gig.spring6.order.Order;
 import io.gig.spring6.order.OrderService;
+import io.gig.spring6.order.OrderServiceImpl;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.orm.jpa.JpaTransactionManager;
 
 import java.math.BigDecimal;
 
