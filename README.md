@@ -434,3 +434,55 @@ public BigDecimal getExRate(String currency) {
 - EntityManagerFactory : EntityManager 생성하는 주체
 
 <br />
+
+```jsx
+public void save(Order order) {
+
+        // em
+        EntityManager em = emf.createEntityManager();
+
+        // transaction
+        EntityTransaction transaction = em.getTransaction();
+
+        transaction.begin();
+
+        try {
+            em.persist(order);
+            em.flush();
+
+            // em.persist
+            transaction.commit();
+        } catch (RuntimeException e) {
+            if (transaction.isActive()) {
+                transaction.rollback();
+            }
+            throw e;
+        } finally {
+            if (em.isOpen()) {
+                em.close();
+            }
+        }
+}
+```
+
+- JPA 내부적으로 동작하는 로직
+
+## 스프링 데이터 액세스 예외처리
+
+JDBC SQLException
+
+- JDBC 를 기반으로 하는 모든 기술에서 발생하는 예외
+- JDBC, MyBatis, JPA, …
+- DB 의 에러코드에 의존하거나, 데이터 기술에 의존적인 예외처리 코드
+
+DataAccessException
+
+- 에러를 추상화
+- DB 의 에러코드와 데이터 액세스 기술에 독립적인 예외 구조
+- 적절한 예외 번역(exception translation) 도구를 제공
+
+
+![Image](images/a10.png)
+
+
+<br />
