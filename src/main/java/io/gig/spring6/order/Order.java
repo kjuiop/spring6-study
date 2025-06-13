@@ -1,22 +1,15 @@
 package io.gig.spring6.order;
 
-import jakarta.persistence.*;
-
 import java.math.BigDecimal;
 
 /**
  * @author : JAKE
  * @date : 2025/06/11
  */
-@Entity
-@Table(name = "orders")
 public class Order {
 
-    @Id
-    @GeneratedValue
     private Long id;
 
-    @Column(unique = true)
     private String no;
 
     private BigDecimal total;
