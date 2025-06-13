@@ -1,8 +1,7 @@
 package io.gig.spring6;
 
+import io.gig.spring6.data.OrderRepository;
 import io.gig.spring6.order.Order;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
@@ -15,21 +14,17 @@ import java.math.BigDecimal;
 public class DataClient {
     public static void main(String[] args) {
         BeanFactory beanFactory = new AnnotationConfigApplicationContext(DataConfig.class);
-        EntityManagerFactory emf = beanFactory.getBean(EntityManagerFactory.class);
-
-        // em
-        EntityManager em = emf.createEntityManager();
-
-        // transaction
-        em.getTransaction().begin();
+        OrderRepository orderRepository = beanFactory.getBean(OrderRepository.class);
 
         Order order = new Order("100", BigDecimal.TEN);
-        em.persist(order);
+        orderRepository.save(order);
 
         System.out.println(order);
 
-        // em.persist
-        em.getTransaction().commit();
-        em.close();
+        Order order2 = new Order("100", BigDecimal.TEN);
+        orderRepository.save(order2);
+
+        System.out.println(order2);
+
     }
 }

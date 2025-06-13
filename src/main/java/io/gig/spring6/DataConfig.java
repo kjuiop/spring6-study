@@ -1,5 +1,7 @@
 package io.gig.spring6;
 
+import io.gig.spring6.data.OrderRepository;
+import jakarta.persistence.EntityManagerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
@@ -36,5 +38,11 @@ public class DataConfig {
         }});
 
         return emf;
+    }
+
+    @Bean
+    public OrderRepository orderRepository(LocalContainerEntityManagerFactoryBean factoryBean) {
+        EntityManagerFactory emf = factoryBean.getObject();
+        return new OrderRepository(emf);
     }
 }
