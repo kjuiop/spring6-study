@@ -1,6 +1,7 @@
 package io.gig.spring6.order;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -10,6 +11,7 @@ import java.util.List;
  * @date : 2025/06/13
  */
 @Service
+@Transactional
 public class OrderServiceImpl implements OrderService{
 
     private final OrderRepository orderRepository;
