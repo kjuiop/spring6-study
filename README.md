@@ -485,4 +485,77 @@ DataAccessException
 ![Image](images/a10.png)
 
 
+```java
+public class DataClient {
+    public static void main(String[] args) {
+        BeanFactory beanFactory = new AnnotationConfigApplicationContext(DataConfig.class);
+        OrderRepository orderRepository = beanFactory.getBean(OrderRepository.class);
+        JpaTransactionManager transactionManager = beanFactory.getBean(JpaTransactionManager.class);
+
+        try {
+            new TransactionTemplate(transactionManager).execute(status -> {
+                // transaction begin
+                Order order = new Order("100", BigDecimal.TEN);
+                orderRepository.save(order);
+
+                System.out.println(order);
+
+                Order order2 = new Order("100", BigDecimal.TEN);
+                orderRepository.save(order2);
+                System.out.println(order2);
+
+                return null;
+            });
+        } catch (DataIntegrityViolationException e) {
+            System.out.println("주문번호 중복 복구 작업");
+        }
+    }
+}
+```
+
+- TransactionTemplate 을 활용한 Sample Code
+
+```java
+public class OrderRepository {
+
+    @PersistenceContext
+    private EntityManager em;
+
+    public void save(Order order) {
+        em.persist(order);
+    }
+}
+
+```
+- OrderRepository 는 Spring Bean 의 EntityManager 를 로드하여 persist 하는 역할만 함
+- 나머지 트랜잭션, 롤백처리는 TransactionTemplate 에서 기능을 수행함
+
 <br />
+
+## 스프링 애플리케이션의 빈이 존재하는 계층 구조
+
+- 3개의 전형적인 (stereotype) 애노테이션을 사용하는 애플리케이션 빈의 위치
+
+![Image](images/a11.png)
+
+
+<br />
+
+### 서비스
+
+- 클라이언트에게 서비스를 제공해주는 오브젝트나 모듈
+- 서비스는 일반적으로 상태를 가지지 않음
+  - 상태없는 (stateless) 싱글톤 스프링 빈을 사용하기 적합
+  - @Component, @Service
+
+<br />
+
+### 서비스의 종류
+
+- 애플리케이션 서비스 (application service)
+- 도메인 서비스 (domain service)
+- 인프라 서비스 (infrastructure service)
+  - 메일, 캐시, 트랜잭션, 메시징 등
+  
+<br />
+

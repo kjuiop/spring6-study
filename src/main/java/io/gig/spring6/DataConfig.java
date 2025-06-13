@@ -53,9 +53,4 @@ public class DataConfig {
         EntityManagerFactory emf = factoryBean.getObject();
         return new JpaTransactionManager(emf);
     }
-
-    @Bean
-    public OrderRepository orderRepository() {
-        return new OrderRepository();
-    }
 }
