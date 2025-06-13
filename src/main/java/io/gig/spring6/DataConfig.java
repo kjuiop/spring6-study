@@ -11,6 +11,7 @@ import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor;
 import org.springframework.orm.jpa.vendor.Database;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
+import org.springframework.transaction.PlatformTransactionManager;
 
 import javax.sql.DataSource;
 
@@ -48,7 +49,7 @@ public class DataConfig {
     }
 
     @Bean
-    public JpaTransactionManager transactionManager(LocalContainerEntityManagerFactoryBean factoryBean) {
+    public PlatformTransactionManager transactionManager(LocalContainerEntityManagerFactoryBean factoryBean) {
         EntityManagerFactory emf = factoryBean.getObject();
         return new JpaTransactionManager(emf);
     }
