@@ -380,5 +380,57 @@ public BigDecimal getExRate(String currency) {
 ```
 - 위와 같이 response 에서 값을 추출하는 로직을 익명클래스 형태로 구현할 수 있다.
 
+<br />
 
+## 예외
 
+- 예외는 정상적인 프로그램 흐름을 방해하는 사건
+- 예외적인 상황에서만 사용
+- 많은 경우 예외는 프로그램 오류, 버그 때문에 발생
+
+<br />
+
+### 예외가 발생하면
+
+- 예외 상황을 복구해서 정상적인 흐름으로 전환할 수 있는가
+  - 재시도
+  - 대안
+- 버그인가?
+  - 예외가 발생한 코드의 버그인가
+  - 클라이언트의 버그인가
+  - 제어할 수 없는 예외상황인가
+
+<br />
+
+### 예외의 종류
+
+- Error
+  - 시스템에 비정상적인 상황 발생
+  - OutOfMemoryError
+  - ThreadDeath
+- Exception (checked)
+  - catch 나 throws 를 강요
+  - 초기 라이브러리의 잘못된 예외 설계/사용
+  - 복구할 수 없다면 RuntimeException 이나 적절한 추상화 레벨의 예외로 전환해서 던질 것
+- RuntimeException (unchecked)
+
+<br />
+
+### 예외의 추상화와 전환
+
+- 사용 기술에 따라 같은 문제에 대해 다른 종류의 예외 발생
+- 적절한 예외 추상화와 예외 번역이 필요
+
+<br />
+
+### JPA 예시
+
+![Image](images/a9.png)
+
+- DataSource : 애플리케이션 시작 시 한번 생성되며 DB 와 Java 를 연결해줌, 명령어 생성 및 수행은 JDBC
+- EntityManager : 주문 생성 시 매번 생성되는 객체, JavaObject 형태이며 DB 에 저장되는 객체를 의미함
+- Order : 테이블 정의
+- OrderRepository : DB 와 관련된 작업을 담당하는 오브젝트
+- EntityManagerFactory : EntityManager 생성하는 주체
+
+<br />
