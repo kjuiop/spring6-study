@@ -591,4 +591,68 @@ public class OrderRepository {
 
 <br />
 
+
+```java
+@Configuration
+public class DataConfig {
+
+    // data source
+    @Bean
+    public DataSource dataSource() {
+        return new EmbeddedDatabaseBuilder().setType(EmbeddedDatabaseType.H2).build();
+    }
+
+    // entity manager factory
+    @Bean
+    public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
+        LocalContainerEntityManagerFactoryBean emf = new LocalContainerEntityManagerFactoryBean();
+        emf.setDataSource(dataSource());
+        emf.setPackagesToScan("io.gig.spring6");
+        emf.setJpaVendorAdapter(new HibernateJpaVendorAdapter() {{
+            setDatabase(Database.H2);
+            setGenerateDdl(true);
+            setShowSql(true);
+        }});
+
+        return emf;
+    }
+
+    @Bean
+    public BeanPostProcessor persistenceAnnotationBeanPostProcessor() {
+        return new PersistenceAnnotationBeanPostProcessor();
+    }
+
+    @Bean
+    public PlatformTransactionManager transactionManager(LocalContainerEntityManagerFactoryBean factoryBean) {
+        EntityManagerFactory emf = factoryBean.getObject();
+        return new JpaTransactionManager(emf);
+    }
+}
+```
+
+- 추상화 후 JpaTransactionManager -> PlatformTransactionManager 로 변경
+
+
 ![Image](images/a12.png)
+
+
+<br />
+
+
+## JDBC 데이터 액세스 기술
+
+### JDBC Client
+
+- Spring 6.1 에서 추가
+- SQL을 사용하는 JDBC 데이터 처리 코드를 유연하게 작성하도록 도와줌
+- 일종의 템플릿/콜백
+- 스프링의 JdbcTemplate 의 대체 기술
+
+<br />
+
+### DataSourceTransactionManager
+
+- JDBC 의 Connection 을 이용하는 트랜잭션 매니저
+- Connection 을 리턴하는 DataSource 오브젝트 필요
+
+<br />
