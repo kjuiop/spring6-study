@@ -1,6 +1,5 @@
 package io.gig.spring6;
 
-import io.gig.spring6.data.OrderRepository;
 import jakarta.persistence.EntityManagerFactory;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.context.annotation.Bean;

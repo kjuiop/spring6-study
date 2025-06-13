@@ -1,6 +1,5 @@
 package io.gig.spring6.order;
 
-import io.gig.spring6.data.OrderRepository;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.support.TransactionTemplate;
